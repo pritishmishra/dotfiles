@@ -1,0 +1,14 @@
+alias essh="local_expect_ssh"
+local_expect_ssh() {
+  expect -c '
+  set timeout 60
+  spawn ssh '$1'
+  expect "$ "
+  send "exec sudo su - vcap\n"
+  expect "$ "
+  send "source <(curl https://github.com/raw/i330301/devsetup/master/bin/dev-helpers/source-in-remote )\n"
+  # expect "$ "
+  # send "\$CTMUX attach\n"
+  interact
+  '
+}
