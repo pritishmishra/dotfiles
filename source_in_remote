@@ -1,0 +1,14 @@
+#!/bin/bash
+CTMUX="tmux -L $JB_USER_NAME"
+$CTMUX -f <(
+  TMUX_CONFS=$(curl -s https://raw.githubusercontent.com/pritishmishra/dotfiles/master/.tmux.conf)
+  TMUX_CONFS+="
+    set -g default-command \"bash --rcfile <(                                                                                 \
+      cat ~/.bashrc ;                                                                                                         \
+      curl -s https://raw.githubusercontent.com/pritishmishra/dotfiles/master/helper_functions ;           \
+      echo alias vim=\\\'   \'vim -u <(curl -s https://raw.githubusercontent.com/pritishmishra/dotfiles/master/.vimrc)\'    \\\' ; \
+      )\"
+  "
+  echo "$TMUX_CONFS"
+  ) new-session -d -s $(grep -om 1 "AWS" ~/.bashrc || echo "SC6");
+$CTMUX attach;
